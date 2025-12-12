@@ -13,24 +13,32 @@ export default async function handler(req, res) {
   }
 
   try {
-    const form = formidable({ multiples: false });
+    const form = formidable();
 
     const [fields, files] = await form.parse(req);
 
-    const file = files.resume || files.file;
+    console.log("FIELDS:", fields);
+    console.log("FILES:", files);
 
-    if (!file) {
-      return res.status(400).json({ error: "No resume uploaded" });
+    const resume = files.resume;
+
+    if (!resume) {
+      return res.status(400).json({
+        error: "Resume file not received",
+        receivedFiles: Object.keys(files),
+      });
     }
 
     return res.status(200).json({
       success: true,
-      filename: file.originalFilename,
-      size: file.size,
-      message: "Resume uploaded successfully",
+      name: resume.originalFilename,
+      size: resume.size,
     });
   } catch (err) {
-    console.error("Parse error:", err);
-    return res.status(500).json({ error: "Resume parsing failed" });
+    console.error("SERVER ERROR:", err);
+    return res.status(500).json({
+      error: "Internal Server Error",
+      message: err.message,
+    });
   }
 }
