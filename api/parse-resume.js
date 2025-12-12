@@ -1,47 +1,40 @@
-import fetch from "node-fetch";
-import FormData from "form-data";
+// api/parse-resume.js
+import formidable from "formidable";
 
-export async function handler(event) {
-  try {
-    if (event.httpMethod !== "POST") {
-      return { statusCode: 405, body: "Method Not Allowed" };
+export const config = {
+  api: { bodyParser: false }
+};
+
+export default function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
+
+  const form = new formidable.IncomingForm({
+    multiples: false,
+    keepExtensions: true
+  });
+
+  form.parse(req, async (err, fields, files) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: "Upload failed" });
     }
 
-    console.log("📥 API key present?", !!process.env.API_KEY);
-    console.log("📥 Body length:", event.body?.length);
+    const file = files.resume || files.file;
+    if (!file) {
+      return res.status(400).json({ error: "No resume uploaded" });
+    }
 
-    const bodyBuffer = Buffer.from(event.body, "base64");
+    // IMPORTANT:
+    // Do NOT save file to disk
+    // Do NOT create folders
+    // Just read from file.filepath
 
-    const formData = new FormData();
-    formData.append("file", bodyBuffer, {
-      filename: "resume.pdf",
-      contentType: event.headers["content-type"] || "application/pdf",
+    return res.status(200).json({
+      success: true,
+      filename: file.originalFilename,
+      size: file.size
     });
-
-    const apiResponse = await fetch("https://api.superparser.com/parse", {
-      method: "POST",
-      headers: {
-        "X-API-Key": process.env.API_KEY,
-      },
-      body: formData,
-    });
-
-    console.log("📤 Superparser status:", apiResponse.status);
-
-    const result = await apiResponse.json();
-    console.log("📤 Superparser result:", result);
-
-    return {
-      statusCode: apiResponse.status,
-      body: JSON.stringify(result),
-    };
-
-  } catch (err) {
-    console.error("❌ Function error:", err);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: err.message }),
-    };
-  }
+  });
 }
-
