@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Resume Parser</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>⚡ AI-Powered Resume Parser</h1>
+      <p>Upload your CV/Resume and extract details instantly</p>
+    </header>
+
+    <div class="upload-area">
+      <label for="resume-file" class="file-label">
+        <span>📂 Drag & Drop or Click to Upload</span>
+        <input type="file" id="resume-file" accept=".pdf,.doc,.docx">
+      </label>
+      <button id="parse-button" disabled>🚀 Parse Resume</button>
+    </div>
+
+    <!-- Results section -->
+    <div id="results-container" class="results-container hidden">
+      <button id="copy-btn" class="copy-btn hidden">📋 Copy</button>
+      <div id="results"></div>
+    </div>
+
+    <div id="loading" class="hidden">
+      <p>⏳ Parsing resume, please wait...</p>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>© 2025 Aniket Lad | <strong>AI Resume Parser</strong></p>
+  </footer>
+
+  <script src="script.js" defer></script>
+
+</body>
+</html>
