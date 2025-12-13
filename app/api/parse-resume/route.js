@@ -1,26 +1,29 @@
 import pdf from "pdf-parse";
 import mammoth from "mammoth";
 
-console.log("✅ parse-resume API HIT");
-
 export async function POST(req) {
-  const formData = await req.formData();
-  const file = formData.get("resume");
-
-  if (!file) {
-    return new Response(JSON.stringify({ error: "No file uploaded" }), {
-      status: 400,
-    });
-  }
-
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const ext = file.name.split(".").pop().toLowerCase();
-
-  let text = "";
-
   try {
+    console.log("✅ API HIT");
+
+    const formData = await req.formData();
+    console.log("📦 FormData keys:", [...formData.keys()]);
+
+    const file = formData.get("resume");
+
+    if (!file || typeof file.arrayBuffer !== "function") {
+      return new Response(
+        JSON.stringify({ error: "Resume file not received" }),
+        { status: 400 }
+      );
+    }
+
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const ext = file.name.split(".").pop().toLowerCase();
+
+    let text = "";
+
     if (ext === "pdf") {
-      const data = await pdf(buffer);
+      const data = await pdf(buffer); // ✅ BUFFER, not path
       text = data.text;
     } else if (ext === "docx") {
       const result = await mammoth.extractRawText({ buffer });
@@ -36,9 +39,9 @@ export async function POST(req) {
       status: 200,
     });
   } catch (err) {
-    console.error(err);
+    console.error("🔥 FULL ERROR:", err);
     return new Response(
-      JSON.stringify({ error: "Failed to parse resume" }),
+      JSON.stringify({ error: err.message }),
       { status: 500 }
     );
   }
