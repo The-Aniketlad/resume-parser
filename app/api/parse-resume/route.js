@@ -1,7 +1,7 @@
 import pdf from "pdf-parse";
 import mammoth from "mammoth";
 
-// ✅ HANDLE GET (prevents 405 forever)
+
 export async function GET() {
   return new Response(
     JSON.stringify({
@@ -14,7 +14,7 @@ export async function GET() {
   );
 }
 
-// ✅ HANDLE POST (actual logic)
+
 export async function POST(req) {
   try {
     const formData = await req.formData();
