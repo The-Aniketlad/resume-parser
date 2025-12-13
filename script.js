@@ -6,7 +6,7 @@ const loading = document.getElementById("loading");
 const resultsContainer = document.getElementById("results-container");
 const resultsDiv = document.getElementById("results");
 
-// Enable button when file selected
+
 fileInput.addEventListener("change", () => {
   if (fileInput.files.length > 0) {
     parseBtn.disabled = false;
@@ -15,7 +15,7 @@ fileInput.addEventListener("change", () => {
   }
 });
 
-// Click → POST resume
+
 parseBtn.addEventListener("click", async () => {
   const file = fileInput.files[0];
 
@@ -29,11 +29,11 @@ parseBtn.addEventListener("click", async () => {
   resultsDiv.innerHTML = "";
 
   const formData = new FormData();
-  formData.append("resume", file); // 🔑 MUST be "resume"
+  formData.append("resume", file); 
 
   try {
     const response = await fetch("/api/parse-resume", {
-      method: "POST", // 🔥 REQUIRED
+      method: "POST", 
       body: formData,
     });
 
