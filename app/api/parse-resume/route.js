@@ -1,6 +1,8 @@
 import pdf from "pdf-parse";
 import mammoth from "mammoth";
 
+console.log("✅ parse-resume API HIT");
+
 export async function POST(req) {
   const formData = await req.formData();
   const file = formData.get("resume");
