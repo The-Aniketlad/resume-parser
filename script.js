@@ -37,7 +37,19 @@ parseBtn.addEventListener("click", async () => {
       body: formData,
     });
 
-    const data = await response.json();
+    let data = null;
+
+    try {
+      data = await response.json();
+    } catch (e) {
+      throw new Error("Invalid server response");
+    }
+
+    if (!response.ok) {
+      alert(data?.error || "Failed to parse resume");
+      return;
+    }
+
 
     loading.classList.add("hidden");
 
